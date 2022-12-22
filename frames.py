@@ -240,6 +240,10 @@ class FilmView(tk.Frame):
         tk.Label(self.delete_frame, text='Delete ID').pack()
         self.deleteid = tk.Entry(self.delete_frame)
         self.deleteid.pack()
+        tk.Button(self.delete_frame, text='Delete genre', command=self.delete_genre).pack()
+        tk.Label(self.delete_frame, text='Delete genre').pack()
+        self.deletegenre = tk.Entry(self.delete_frame)
+        self.deletegenre.pack()
         tk.Button(self.delete_frame, text='Film info', command=self.film_info).pack()
         tk.Label(self.delete_frame, text='Info ID').pack()
         self.infoid = tk.Entry(self.delete_frame)
@@ -250,6 +254,17 @@ class FilmView(tk.Frame):
             l = tk.Label(fr, text=f'({rec[0]}) "{rec[1]}" || {rec[2]} || {rec[3]} || {rec[4]} || {rec[5]} || {rec[6]}')
             l.pack(side=tk.LEFT)
             print(rec[0])
+
+    def delete_genre(self):
+        genre = self.deletegenre.get()
+        with self.master.engine_new.connect() as conn:
+            print(conn.execute(text(f"SELECT delete_genre('{genre}')")))
+            conn.commit()
+
+        tk.messagebox.showinfo('Delete', 'OK')
+
+        self.pack_forget()
+        AdminActions(self.master).edit_films()
 
     def delete_record(self):
         idx = self.deleteid.get()
